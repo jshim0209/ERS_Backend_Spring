@@ -19,4 +19,4 @@ VALUES ('pending'),
 
 INSERT INTO reimbursements (amount, description, receipt, time_resolved, time_submitted, author_id, resolver_id, status_id, type_id)
 VALUES
-(1700.98, 'Relocation Assistance', 'https://thumbs.dreamstime.com/z/vector-paper-check-sell-receipt-bill-template-vector-paper-cash-sell-receipt-139437685.jpg', null, '05/05/2022', 2, null, 1, 4);
+(1700.98, 'Relocation Assistance', 'https://storage.googleapis.com/ers-images/receipt-3.jpg', null, '05/05/2022', 2, null, 1, 4);
