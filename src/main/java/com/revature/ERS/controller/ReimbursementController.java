@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin(originPatterns = "*", exposedHeaders = "*", allowedHeaders = "*")
@@ -72,7 +74,7 @@ public class ReimbursementController {
 
                 System.out.println(userDto);
 
-                if (userDto.getUserRole().getId() == 2){
+                if (Objects.equals(userDto.getUserRole(), "finance_manager")){
                     List<ReimbursementDto> reimbDtos = reimbursementService.getAllReimbursements();
                     return ResponseEntity.ok(reimbDtos);
                 } else {
@@ -105,5 +107,31 @@ public class ReimbursementController {
         } catch (JsonProcessingException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/reimbursements/filterBy")
+    public ResponseEntity<?> getReimbursementsByStatus(@RequestHeader ("Authorization") String headerValue,
+                                                       @RequestParam("status") Status status) {
+        try {
+            String jwt = headerValue.split(" ")[1];
+            UserDto userDto = jwtService.parseJwt(jwt);
+
+            System.out.println(userDto);
+
+            if (Objects.equals(userDto.getUserRole(), "finance_manager")){
+                List<ReimbursementDto> reimbDtos = new ArrayList<>();
+                if (Objects.equals(status.getStatus(), "pending") ||
+                        Objects.equals(status.getStatus(), "approved") ||
+                        Objects.equals(status.getStatus(), "rejected")) {
+                    reimbDtos = reimbursementService.getReimbursementsByStatus(status);
+                }
+                return ResponseEntity.ok(reimbDtos);
+            } else {
+                return ResponseEntity.status(401).body("You are not allowed to access this page");
+            }
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+
     }
 }

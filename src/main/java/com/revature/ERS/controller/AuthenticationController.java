@@ -48,7 +48,7 @@ public class AuthenticationController {
             udto.setLastName(user.getLastName());
             udto.setEmail(user.getEmail());
             udto.setUsername(user.getUsername());
-            udto.setUserRole(user.getRole());
+            udto.setUserRole(user.getRole().getRole());
 
             return ResponseEntity.ok().headers(responseHeaders).body(udto);
         } catch (FailedLoginException e) {

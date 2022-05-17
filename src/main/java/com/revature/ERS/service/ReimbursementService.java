@@ -3,6 +3,7 @@ package com.revature.ERS.service;
 import com.revature.ERS.dto.ReimbursementDto;
 import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.model.Reimbursement;
+import com.revature.ERS.model.Status;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.ReimbursementRepository;
 import org.modelmapper.ModelMapper;
@@ -53,6 +54,16 @@ public class ReimbursementService {
         List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
 
         List<Reimbursement> reimbursements = reimbRepo.findByUser(user);
+        for (Reimbursement r : reimbursements) {
+            reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
+        }
+        return reimbursementDtos;
+    }
+
+    public List<ReimbursementDto> getReimbursementsByStatus(Status status) {
+        List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
+
+        List<Reimbursement> reimbursements = reimbRepo.findByStatus(status);
         for (Reimbursement r : reimbursements) {
             reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
         }

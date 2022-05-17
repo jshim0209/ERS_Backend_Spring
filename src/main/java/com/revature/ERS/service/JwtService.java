@@ -25,7 +25,7 @@ public class JwtService {
 
     public String createJwt(User user) throws JsonProcessingException {
         UserDto dto = new UserDto(user.getId(), user.getFirstName(),
-                user.getLastName(), user.getEmail(), user.getUsername(), user.getRole());
+                user.getLastName(), user.getEmail(), user.getUsername(), user.getRole().getRole());
 
         return Jwts.builder()
                 .claim("user_dto", new ObjectMapper().writeValueAsString(dto))
