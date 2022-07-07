@@ -1,7 +1,5 @@
 package com.revature.ERS.dto;
 
-
-import com.revature.ERS.model.UserRole;
 import lombok.*;
 
 @AllArgsConstructor
@@ -17,6 +15,6 @@ public class UserDto {
     private String lastName;
     private String email;
     private String username;
-    private UserRole userRole;
+    private String userRole;
 
 }

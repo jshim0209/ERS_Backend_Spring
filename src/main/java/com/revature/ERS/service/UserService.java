@@ -1,7 +1,7 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.SignUpDto;
 import com.revature.ERS.dto.UserDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.UserRepository;
@@ -43,16 +43,35 @@ public class UserService {
         return null;
     }
 
-    public UserDto createUser(User user) throws UserExistsException {
+//    public UserDto createUser(User user) throws UserExistsException {
+//
+//        User existingUser = userRepo.findByUsernameAndEmail(user.getUsername(), user.getEmail());
+//
+//        if (existingUser != null) {
+//
+//            throw new UserExistsException("An account exists with username of " + user.getUsername() + " and/or emaild address of " + user.getEmail());
+//
+//        } else {
+//            return modelMapper.map(userRepo.save(user), UserDto.class);
+//        }
+//    }
 
-        User existingUser = userRepo.findByUsernameAndEmail(user.getUsername(), user.getEmail());
+    public User createUser(SignUpDto signUpDto) throws UserExistsException {
 
-        if (existingUser != null) {
+        User userAdded = new User(0, signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getUsername(), signUpDto.getPassword(), signUpDto.getEmail(), signUpDto.getUserRole());
 
-            throw new UserExistsException("An account exists with username of " + user.getUsername() + " and/or emaild address of " + user.getEmail());
+        User newUser = userRepo.findByUsernameAndEmail(signUpDto.getUsername(), signUpDto.getEmail());
+
+        if (newUser != null) {
+
+            throw new UserExistsException("An account exists with username of " + signUpDto.getUsername() + " and/or emaild address of " + signUpDto.getEmail());
 
         } else {
-            return modelMapper.map(userRepo.save(user), UserDto.class);
+            return userRepo.save(userAdded);
         }
     }
+
+//        User newUser = modelMapper.map(authRepo.save(signUpDto), User.class);
+//        return newUser;
+//    }
 }
