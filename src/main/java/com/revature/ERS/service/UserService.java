@@ -43,35 +43,20 @@ public class UserService {
         return null;
     }
 
-//    public UserDto createUser(User user) throws UserExistsException {
-//
-//        User existingUser = userRepo.findByUsernameAndEmail(user.getUsername(), user.getEmail());
-//
-//        if (existingUser != null) {
-//
-//            throw new UserExistsException("An account exists with username of " + user.getUsername() + " and/or emaild address of " + user.getEmail());
-//
-//        } else {
-//            return modelMapper.map(userRepo.save(user), UserDto.class);
-//        }
-//    }
-
     public User createUser(SignUpDto signUpDto) throws UserExistsException {
 
         User userAdded = new User(0, signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getUsername(), signUpDto.getPassword(), signUpDto.getEmail(), signUpDto.getUserRole());
 
-        User newUser = userRepo.findByUsernameAndEmail(signUpDto.getUsername(), signUpDto.getEmail());
+        User checkUserByUseranme = userRepo.findByUsername(signUpDto.getUsername());
+        User checkUserByEmail = userRepo.findByEmail(signUpDto.getEmail());
 
-        if (newUser != null) {
-
-            throw new UserExistsException("An account exists with username of " + signUpDto.getUsername() + " and/or emaild address of " + signUpDto.getEmail());
-
+        if (checkUserByUseranme != null) {
+            throw new UserExistsException("An account exists with username of " + signUpDto.getUsername());
+        }
+        else if (checkUserByEmail != null) {
+            throw new UserExistsException("An account exists with email of " + signUpDto.getEmail());
         } else {
             return userRepo.save(userAdded);
         }
     }
-
-//        User newUser = modelMapper.map(authRepo.save(signUpDto), User.class);
-//        return newUser;
-//    }
 }

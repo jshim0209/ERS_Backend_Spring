@@ -8,8 +8,6 @@ import com.revature.ERS.model.TokenResponse;
 import com.revature.ERS.model.User;
 import com.revature.ERS.service.AuthenticationService;
 import com.revature.ERS.service.JwtService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,13 +50,5 @@ public class AuthenticationController {
         }
         return ResponseEntity.badRequest().build();
     }
-
-//    @PostMapping("/register")
-//    public ResponseEntity<TokenResponse> register(@RequestBody SignUpDto dto) {
-//        try {
-//            User registeredUser =
-//
-//        }
-//    }
 }
 

@@ -31,29 +31,31 @@ public class UserController {
 
     UserDto udto = new UserDto();
 
-    @PostMapping("/signUp")
-    public ResponseEntity<TokenResponse> registerUser(@RequestBody SignUpDto signUpDto) throws UserExistsException, JsonProcessingException {
-        try {
-
-            User user = userService.createUser(signUpDto);
-            String jwt = jwtService.createJwt(user);
-
-            return ResponseEntity.ok().body(new TokenResponse(jwt, user.getId(), user.getUsername(),user.getRole().getRole(), user.getFirstName()));
-
-        } catch (UserExistsException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-//        User user = modelMapper.map(signUpDto, User.class);
+//    @PostMapping("/signUp")
+//    public ResponseEntity<TokenResponse> registerUser(@RequestBody SignUpDto signUpDto) throws UserExistsException, JsonProcessingException {
+//        try {
 //
-//        UserDto addedUser = userService.createUser(signUpDto);
+//            User user = userService.createUser(signUpDto);
+//            String jwt = jwtService.createJwt(user);
 //
-//        String jwt = jwtService.createJwt(user);
+//            return ResponseEntity.ok().body(new TokenResponse(jwt, user.getId(), user.getUsername(),user.getRole().getRole(), user.getFirstName()));
 //
-//        if (addedUser != null) {
-//            return ResponseEntity.ok().body(new TokenResponse(jwt, user.getId(), user.getUsername(), user. getRole().getRole(), user.getFirstName()));
-//        } else {
+//        } catch (UserExistsException e) {
 //            return ResponseEntity.badRequest().build();
 //        }
+//    }
+
+    @PostMapping("/signUp")
+    public ResponseEntity<TokenResponse> registerUser(@RequestBody SignUpDto signUpDto) throws UserExistsException, JsonProcessingException {
+
+        User user = userService.createUser(signUpDto);
+
+        String jwt = jwtService.createJwt(user);
+
+        if (user != null) {
+            return ResponseEntity.ok().body(new TokenResponse(jwt, user.getId(), user.getUsername(), user. getRole().getRole(), user.getFirstName()));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
