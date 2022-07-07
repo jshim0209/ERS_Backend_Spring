@@ -1,27 +1,20 @@
 package com.revature.ERS.service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.ERS.dto.UserDto;
 import com.revature.ERS.model.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.security.Keys;
-
-
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.sql.Date;
+import java.time.Instant;
 
 @Service
 public class JwtService {
-
-    private Key key;
-
-    public JwtService() {
-        byte[] secret = "dsalkgjasgieo&$(@&$*(Gkljdgalskegjoiejladsgkjahslkhjed".getBytes();
-        key = Keys.hmacShaKeyFor(secret);
-    }
+    private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static JwtService instance;
 
     public String createJwt(User user) throws JsonProcessingException {
         UserDto dto = new UserDto(user.getId(), user.getFirstName(),
@@ -32,12 +25,17 @@ public class JwtService {
                 .signWith(key)
                 .compact();
     }
+    public static boolean parseJwt(String jwt) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
 
-    public UserDto parseJwt(String jwt) throws JsonProcessingException {
-        Jws<Claims> token = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+            return (checkExpiration(claims.getBody()));
+        } catch (IllegalArgumentException | SignatureException | ExpiredJwtException e) {
+            return false;
+        }
+    }
 
-        String dtoString = (String)token.getBody().get("user_dto");
-
-        return (new ObjectMapper()).readValue(dtoString, UserDto.class);
+    private static boolean checkExpiration(Claims claims) {
+        return claims.getExpiration().after(Date.from(Instant.now()));
     }
 }

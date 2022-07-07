@@ -17,9 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.ResolutionSyntax;
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(originPatterns = "*", exposedHeaders = "*", allowedHeaders = "*")
@@ -63,75 +66,27 @@ public class ReimbursementController {
         ReimbursementDto newReimb = reimbursementService.addReimbursement(addedReimbursement);
 
         return ResponseEntity.ok(newReimb);
-
     }
 
     @GetMapping("/reimbursements")
-    public ResponseEntity<?> getAllReimbursements(@RequestHeader ("Authorization") String headerValue) {
-            try {
-                String jwt = headerValue.split(" ")[1];
-                UserDto userDto = jwtService.parseJwt(jwt);
-
-                System.out.println(userDto);
-
-                if (Objects.equals(userDto.getUserRole(), "finance_manager")){
-                    List<ReimbursementDto> reimbDtos = reimbursementService.getAllReimbursements();
-                    return ResponseEntity.ok(reimbDtos);
-                } else {
-                    return ResponseEntity.status(401).body("You are not allowed to access this page");
-                }
-            } catch (JsonProcessingException e) {
-                return ResponseEntity.status(401).body(e.getMessage());
-            }
+    public ResponseEntity<?> getAllReimbursements(@RequestParam Optional<String> status) {
+        List<ReimbursementDto> reimbursementDtos = reimbursementService.getAllReimbursements();
+        if (status.isPresent()) {
+            reimbursementDtos = reimbursementService.getReimbursementsByStatus(status);
+        }
+        return ResponseEntity.ok(reimbursementDtos);
     }
 
     @GetMapping("/users/{userId}/reimbursements")
-    public ResponseEntity<?> getReimbursementsByUser(@RequestHeader ("Authorization") String headerValue,
-                                                     @PathVariable ("userId") String userId) {
-        try {
-            String jwt = headerValue.split(" ")[1];
-
-            UserDto userDto = jwtService.parseJwt(jwt);
-
-            UserDto user = userService.getUserById(Integer.parseInt(userId));
-
-            if (userDto.getId() == user.getId()) {
-
-                List<ReimbursementDto> reimbDtos = reimbursementService.getReimbursementsByUser(modelMapper.map(user, User.class));
-
-                return ResponseEntity.ok(reimbDtos);
-
-            } else {
-                return ResponseEntity.status(401).body("You are not allowed to acces this page");
-            }
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
-        }
+    public ResponseEntity<?> getReimbursementsByUser(@PathVariable ("userId") String userId
+//            , @RequestParam Optional<String> status
+    ) {
+        UserDto user = userService.getUserById(Integer.parseInt(userId));
+        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUser(modelMapper.map(user, User.class));
+//        if (status.isPresent()) {
+//            reimbursementDtos = reimbursementService.getReimbursementsByStatus(status);
+//        }
+        return ResponseEntity.ok(reimbursementDtos);
     }
 
-    @GetMapping("/reimbursements/filterBy")
-    public ResponseEntity<?> getReimbursementsByStatus(@RequestHeader ("Authorization") String headerValue,
-                                                       @RequestParam("status") Status status) {
-        try {
-            String jwt = headerValue.split(" ")[1];
-            UserDto userDto = jwtService.parseJwt(jwt);
-
-            System.out.println(userDto);
-
-            if (Objects.equals(userDto.getUserRole(), "finance_manager")){
-                List<ReimbursementDto> reimbDtos = new ArrayList<>();
-                if (Objects.equals(status.getStatus(), "pending") ||
-                        Objects.equals(status.getStatus(), "approved") ||
-                        Objects.equals(status.getStatus(), "rejected")) {
-                    reimbDtos = reimbursementService.getReimbursementsByStatus(status);
-                }
-                return ResponseEntity.ok(reimbDtos);
-            } else {
-                return ResponseEntity.status(401).body("You are not allowed to access this page");
-            }
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
-        }
-
-    }
 }

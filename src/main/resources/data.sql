@@ -16,9 +16,9 @@ VALUES ('lodging'),
 ('other');
 
 INSERT INTO status (status)
-VALUES ('pending'),
-('approved'),
-('rejected');
+VALUES ('Pending'),
+('Approved'),
+('Rejected');
 
 INSERT INTO reimbursements (amount, description, receipt, time_resolved, time_submitted, author_id, resolver_id, status_id, type_id)
 VALUES

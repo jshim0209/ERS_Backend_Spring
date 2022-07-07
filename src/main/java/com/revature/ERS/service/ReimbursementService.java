@@ -60,7 +60,28 @@ public class ReimbursementService {
         return reimbursementDtos;
     }
 
-    public List<ReimbursementDto> getReimbursementsByStatus(Status status) {
+
+//    public List<ReimbursementDto> getReimbursementsByStatus(Status status) {
+//        List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
+//
+//        List<Reimbursement> reimbursements = reimbRepo.findByStatus(status);
+//        for (Reimbursement r : reimbursements) {
+//            reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
+//        }
+//        return reimbursementDtos;
+//    }
+
+//    public List<ReimbursementDto> getReimbursementsByStatus(int statusId) {
+//        List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
+//
+//        List<Reimbursement> reimbursements = reimbRepo.findByStatus(statusId);
+//        for (Reimbursement r : reimbursements) {
+//            reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
+//        }
+//        return reimbursementDtos;
+//    }
+
+    public List<ReimbursementDto> getReimbursementsByStatus(Optional<String> status) {
         List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
 
         List<Reimbursement> reimbursements = reimbRepo.findByStatus(status);

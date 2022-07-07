@@ -1,7 +1,5 @@
 package com.revature.ERS.dto;
 
-
-import com.revature.ERS.model.UserRole;
 import lombok.*;
 
 @AllArgsConstructor

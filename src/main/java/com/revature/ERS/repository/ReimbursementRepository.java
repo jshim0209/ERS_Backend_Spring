@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReimbursementRepository extends JpaRepository<Reimbursement, Integer> {
@@ -15,5 +16,11 @@ public interface ReimbursementRepository extends JpaRepository<Reimbursement, In
     @Query("select r from Reimbursement r where r.author=?1")
     List<Reimbursement> findByUser (User user);
 
-    List<Reimbursement> findByStatus (Status status);
+//    @Query("select r from Reimbursement r where r.status.id=?1")
+//    List<Reimbursement> findByStatus (int statusId);
+
+    @Query("select r from Reimbursement r where r.status.status=?1")
+    List<Reimbursement> findByStatus (Optional<String> status);
+
+//    List<Reimbursement> findByStatus (Status status);
 }
