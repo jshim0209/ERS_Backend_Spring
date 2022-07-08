@@ -36,6 +36,7 @@ public class ReimbursementServiceTest {
 
     Reimbursement fakeReimb1 = new Reimbursement();
     Reimbursement fakeReimb2 = new Reimbursement();
+    Reimbursement fakeReimb3 = new Reimbursement();
     User fakeUser1 = new User();
     User fakeUser2 = new User();
     UserRole fakeRole1 = new UserRole();
@@ -70,15 +71,15 @@ public class ReimbursementServiceTest {
         fakeUser2.setRole(fakeRole2);
 
         fakeStatus1.setId(2);
-        fakeStatus1.setStatus("approved");
+        fakeStatus1.setStatus("Approved");
 
         fakeStatus2.setId(1);
-        fakeStatus2.setStatus("pending");
+        fakeStatus2.setStatus("Pending");
 
         fakeType1.setId(1);
-        fakeType1.setType("lodging");
+        fakeType1.setType("Lodging");
         fakeType2.setId(2);
-        fakeType2.setType("food");
+        fakeType2.setType("Food");
 
         fakeReimb1.setId(1);
         fakeReimb1.setAmount(1000.00);
@@ -101,6 +102,18 @@ public class ReimbursementServiceTest {
         fakeReimb2.setResolver(null);
         fakeReimb2.setStatus(fakeStatus2);
         fakeReimb2.setType(fakeType2);
+
+        fakeReimb3.setId(3);
+        fakeReimb3.setAmount(300.00);
+        fakeReimb3.setTimeSubmitted("06/08/2022");
+        fakeReimb3.setTimeResolved(null);
+        fakeReimb3.setDescription("description2");
+        fakeReimb3.setReceipt("image2.jpg");
+        fakeReimb3.setAuthor(fakeUser1);
+        fakeReimb3.setResolver(null);
+        fakeReimb3.setStatus(fakeStatus2);
+        fakeReimb3.setType(fakeType2);
+
     }
 
     @Test
@@ -113,11 +126,11 @@ public class ReimbursementServiceTest {
 
         List<ReimbursementDto> expected = new ArrayList<>();
         expected.add(new ReimbursementDto(1, 1000.00, "05/07/2022",
-                "05/08/2022", "description", "image.jpg", new AuthorDto(1, "username1", "email1"),
-                new ResolverDto(2, "username2", "email2"), fakeStatus1, fakeType1));
+                "05/08/2022", "description", "image.jpg", new AuthorDto("username1"),
+                new ResolverDto("username2"), fakeStatus1, fakeType1));
 
         expected.add(new ReimbursementDto(2, 500.00, "05/08/2022",
-                null, "description1", "image1.jpg", new AuthorDto(1, "username1", "email1"),
+                null, "description1", "image1.jpg", new AuthorDto("username1"),
                 null, fakeStatus2, fakeType2));
 
         List<ReimbursementDto> actual = reimbService.getAllReimbursements();
@@ -131,8 +144,8 @@ public class ReimbursementServiceTest {
         when(reimbRepo.findById(1)).thenReturn(Optional.of(fakeReimb1));
 
         ReimbursementDto expected = new ReimbursementDto(1, 1000.00, "05/07/2022",
-                "05/08/2022", "description", "image.jpg", new AuthorDto(1, "username1", "email1"),
-                new ResolverDto(2, "username2", "email2"), fakeStatus1, fakeType1);
+                "05/08/2022", "description", "image.jpg", new AuthorDto("username1"),
+                new ResolverDto("username2"), fakeStatus1, fakeType1);
 
         ReimbursementDto actual = reimbService.getReimbursementById(1);
 
@@ -142,7 +155,7 @@ public class ReimbursementServiceTest {
     @Test
     void test_add_reimbursement_positive() {
 
-        AuthorDto fakeUserDto1 = new AuthorDto(1, "username1", "email1");
+        AuthorDto fakeUserDto1 = new AuthorDto("username1");
 
         Reimbursement addedReimb = new Reimbursement();
         addedReimb.setId(3);
@@ -176,14 +189,41 @@ public class ReimbursementServiceTest {
 
         List<ReimbursementDto> expected = new ArrayList<>();
         expected.add(new ReimbursementDto(1, 1000.00, "05/07/2022",
-                "05/08/2022", "description", "image.jpg", new AuthorDto(1, "username1", "email1"),
-                new ResolverDto(2, "username2", "email2"), fakeStatus1, fakeType1));
+                "05/08/2022", "description", "image.jpg", new AuthorDto("username1"),
+                new ResolverDto("username2"), fakeStatus1, fakeType1));
 
         expected.add(new ReimbursementDto(2, 500.00, "05/08/2022",
-                null, "description1", "image1.jpg", new AuthorDto(1, "username1", "email1"),
+                null, "description1", "image1.jpg", new AuthorDto("username1"),
                 null, fakeStatus2, fakeType2));
 
         List<ReimbursementDto> actual = reimbService.getReimbursementsByUser(fakeUser1);
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_find_reimbursement_byStatus_positive() {
+
+        List<Reimbursement> fakeReimbs = new ArrayList<>();
+        fakeReimbs.add(fakeReimb1);
+        fakeReimbs.add(fakeReimb2);
+        fakeReimbs.add(fakeReimb3);
+
+        List<Reimbursement> pendingReimbs = new ArrayList<>();
+        pendingReimbs.add(fakeReimb2);
+        pendingReimbs.add(fakeReimb3);
+
+        when(reimbRepo.findByStatus(Optional.of("Pending"))).thenReturn(pendingReimbs);
+
+        List<ReimbursementDto> expected = new ArrayList<>();
+        expected.add(new ReimbursementDto(2, 500.00, "05/08/2022",
+                null, "description1", "image1.jpg", new AuthorDto("username1"),
+                null, fakeStatus2, fakeType2));
+        expected.add(new ReimbursementDto(3, 300.00, "06/08/2022",
+                null, "description2", "image2.jpg", new AuthorDto("username1"),
+                null, fakeStatus2, fakeType2));
+
+        List<ReimbursementDto> actual = reimbService.getReimbursementsByStatus(Optional.of("Pending"));
 
         Assertions.assertEquals(expected, actual);
     }

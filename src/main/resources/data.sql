@@ -10,10 +10,10 @@ VALUES ('jshim@email.com', 'Jiwon', 'Shim', 'jiwon1234', 'jshim', 2),
 ('mkim@email.com', 'Minah', 'Kim', 'minah1234', 'mkim', 1);
 
 INSERT INTO type (type)
-VALUES ('lodging'),
-('travel'),
-('food'),
-('other');
+VALUES ('Lodging'),
+('Travel'),
+('Food'),
+('Other');
 
 INSERT INTO status (status)
 VALUES ('Pending'),
