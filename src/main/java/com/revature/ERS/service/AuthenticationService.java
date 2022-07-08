@@ -1,5 +1,6 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.LoginDto;
 import com.revature.ERS.exception.BadParameterException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.UserRepository;
@@ -13,13 +14,13 @@ public class AuthenticationService {
     @Autowired
     private UserRepository userRepo;
 
-    public User login(String username, String password) throws FailedLoginException, BadParameterException {
+    public User login(LoginDto loginDto) throws FailedLoginException, BadParameterException {
 
-        if (username.trim().equals("") || password.trim().equals("")) {
+        if (loginDto.getUsername().trim().equals("") || loginDto.getPassword().trim().equals("")) {
             throw new BadParameterException("You must provide a username and password to log in");
         }
 
-        User user = userRepo.findByUsernameAndPassword(username.trim(), password.trim());
+        User user = userRepo.findByUsernameAndPassword(loginDto.getUsername().trim(), loginDto.getPassword().trim());
 
         if (user == null) {
             throw new FailedLoginException("Invalid username and/or password");

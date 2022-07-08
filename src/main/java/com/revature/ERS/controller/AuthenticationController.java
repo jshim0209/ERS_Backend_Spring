@@ -33,7 +33,7 @@ public class AuthenticationController {
     public ResponseEntity<TokenResponse> login(@RequestBody LoginDto dto) throws JsonProcessingException {
 
             try {
-                User user = authService.login(dto.getUsername(), dto.getPassword());
+                User user = authService.login(dto);
 
                 String jwt = jwtService.createJwt(user);
 
