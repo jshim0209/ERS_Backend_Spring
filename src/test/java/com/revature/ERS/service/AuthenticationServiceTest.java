@@ -59,8 +59,8 @@ public class AuthenticationServiceTest {
         invalidLoginDto.setUsername("invalid");
         invalidLoginDto.setPassword("invalid");
 
-
-
+        blankLoginDto.setUsername("");
+        blankLoginDto.setPassword("");
     }
 
     @Test
