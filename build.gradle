@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.6.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
+	id "org.sonarqube" version "3.3"
 }
 
 group = 'com.revature'
@@ -35,6 +37,51 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.7"
+	reportsDirectory = layout.buildDirectory.dir('jacoco')
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "Revature-SpaceEco_spaceeco-backend"
+		property "sonar.organization", "revature-spaceeco"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.exclusions", "**/com/revature/spaceecobackend/model/*, " +
+				"**/com/revature/spaceecobackend/exception/*, **/com/revature/spaceecobackend/SecurityConfiguration.java," +
+				"**/com/revature/spaceecobackend/dao/*, **/com/revature/spaceecobackend/dto/*," +
+				"**/com/revature/spaceecobackend/aspect/*, **/com/revature/spaceecobackend/SpaceecoBackendApplication.java," +
+				"**/com/revature/spaceecobackend/filter/**"
+	}
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'com.revature.main.ErsApplication'
+	}
+
+	from {
+		(configurations.runtimeClasspath).collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+
+	duplicatesStrategy 'exclude'
 }
 
 
