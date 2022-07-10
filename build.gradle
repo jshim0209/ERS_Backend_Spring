@@ -60,7 +60,7 @@ jacocoTestReport {
 sonarqube {
 	properties {
 		property "sonar.projectKey", "jshim0209_ERS_Backend_spring"
-//		property "sonar.organization", "jshim-spaceeco"
+		property "sonar.organization", "jshim0209-ERS"
 		property "sonar.host.url", "https://sonarcloud.io"
 		// Sonar Coverage Exclusions excludes your files from the coverage.
 		// Change it so your main application file is not included. I added the model folder as an example.
