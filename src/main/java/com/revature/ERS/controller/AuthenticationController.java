@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.security.auth.login.FailedLoginException;
 
 @RestController
-@CrossOrigin(originPatterns = "*", exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin
 public class AuthenticationController {
 
     @Autowired

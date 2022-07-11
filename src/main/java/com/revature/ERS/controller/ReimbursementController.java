@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(originPatterns = "*", exposedHeaders = "*", allowedHeaders = "*")
+@CrossOrigin
 public class ReimbursementController {
 
     Logger logger = LoggerFactory.getLogger(ReimbursementController.class);
