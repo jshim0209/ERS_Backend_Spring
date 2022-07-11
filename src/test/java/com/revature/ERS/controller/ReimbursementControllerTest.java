@@ -79,4 +79,13 @@ public class ReimbursementControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(reimbursementDtos)))
                 .andExpect(status().isOk());
     }
+
+//    @Test
+//    void getReimbursementByUser_positive() throws Exception {
+//        when(reimbursementService.getReimbursementsByUser(user1)).thenReturn(reimbursementDtos);
+//
+//        this.mockMvc.perform(get("/users/{userId}/reimbursements", 1))
+//                .andExpect(content().json(mapper.writeValueAsString(reimbursementDtos)))
+//                .andExpect(status().isOk());
+//    }
 }
