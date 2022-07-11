@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationServiceTest {
+class AuthenticationServiceTest {
 
     @Mock
     UserRepository userRepo;

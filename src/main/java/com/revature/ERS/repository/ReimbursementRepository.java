@@ -1,7 +1,6 @@
 package com.revature.ERS.repository;
 
 import com.revature.ERS.model.Reimbursement;
-import com.revature.ERS.model.Status;
 import com.revature.ERS.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -10,8 +10,6 @@ import com.revature.ERS.service.JwtService;
 import com.revature.ERS.service.ReimbursementService;
 import com.revature.ERS.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
 public class ReimbursementController {
-
-    Logger logger = LoggerFactory.getLogger(ReimbursementController.class);
 
     @Autowired
     private ReimbursementService reimbursementService;
@@ -39,10 +34,7 @@ public class ReimbursementController {
     ReimbursementDto rdto = new ReimbursementDto();
 
     @PostMapping("/users/{userId}/reimbursement")
-    public ResponseEntity<?> addReimbursement(@RequestHeader ("Authorization") String headerValue,
-                                              @PathVariable ("userId") String userId, @RequestBody AddReimbursementDto ardto) {
-
-        String jwt = headerValue.split(" ")[1];
+    public ResponseEntity<ReimbursementDto> addReimbursement(@PathVariable ("userId") String userId, @RequestBody AddReimbursementDto ardto) {
 
         Reimbursement addedReimbursement = new Reimbursement();
 
@@ -63,7 +55,7 @@ public class ReimbursementController {
     }
 
     @GetMapping("/reimbursements")
-    public ResponseEntity<?> getAllReimbursements(@RequestParam Optional<String> status) {
+    public ResponseEntity<List<ReimbursementDto>> getAllReimbursements(@RequestParam Optional<String> status) {
         List<ReimbursementDto> reimbursementDtos = reimbursementService.getAllReimbursements();
         if (status.isPresent()) {
             reimbursementDtos = reimbursementService.getReimbursementsByStatus(status);
@@ -72,15 +64,11 @@ public class ReimbursementController {
     }
 
     @GetMapping("/users/{userId}/reimbursements")
-    public ResponseEntity<?> getReimbursementsByUser(@PathVariable ("userId") String userId
-//            , @RequestParam Optional<String> status
+    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") String userId
     ) {
         UserDto user = userService.getUserById(Integer.parseInt(userId));
         List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUser(modelMapper.map(user, User.class));
-//        if (status.isPresent()) {
-//            reimbursementDtos = reimbursementService.getReimbursementsByStatus(status);
-//        }
+
         return ResponseEntity.ok(reimbursementDtos);
     }
-
 }

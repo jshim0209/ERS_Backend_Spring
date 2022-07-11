@@ -8,13 +8,12 @@ import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
-import java.sql.Date;
 import java.time.Instant;
+import java.util.Date;
 
 @Service
 public class JwtService {
     private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static JwtService instance;
 
     public String createJwt(User user) throws JsonProcessingException {
         UserDto dto = new UserDto(user.getId(), user.getFirstName(),

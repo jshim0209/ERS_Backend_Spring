@@ -38,7 +38,7 @@ public class ReimbursementService {
         return reimbursementDtos;
     }
 
-    public ReimbursementDto getReimbursementById(int id) throws NotFound {
+    public ReimbursementDto getReimbursementById(int id) {
 
         Optional<Reimbursement> optional = reimbRepo.findById(id);
 

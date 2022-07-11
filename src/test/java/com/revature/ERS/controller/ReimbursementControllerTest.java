@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ReimbursementControllerTest {
+class ReimbursementControllerTest {
 
     @Mock
     ReimbursementService reimbursementService;
