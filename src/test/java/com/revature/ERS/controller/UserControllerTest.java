@@ -51,7 +51,7 @@ class UserControllerTest {
     @BeforeAll
     void setup() {
         MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.userController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(this.userController).addPlaceholderValue("ui.url", "http://localhost:4200").build();
     }
 
     @BeforeEach

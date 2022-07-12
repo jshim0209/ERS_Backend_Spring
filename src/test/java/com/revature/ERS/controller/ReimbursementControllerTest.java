@@ -53,7 +53,7 @@ class ReimbursementControllerTest {
     @BeforeAll
     void setup() {
         MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.reimbursementController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(this.reimbursementController).addPlaceholderValue("ui.url", "http://localhost:4200").build();
     }
 
     @BeforeEach

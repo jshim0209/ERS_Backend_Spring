@@ -50,7 +50,7 @@ class AuthenticationControllerTest {
     @BeforeAll
     void setup() {
         MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.authController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(this.authController).addPlaceholderValue("ui.url", "http://localhost:4200").build();
     }
 
     @BeforeEach
