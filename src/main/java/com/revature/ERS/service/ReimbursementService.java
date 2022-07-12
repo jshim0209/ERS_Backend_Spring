@@ -1,7 +1,6 @@
 package com.revature.ERS.service;
 
 import com.revature.ERS.dto.ReimbursementDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.model.Reimbursement;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.ReimbursementRepository;

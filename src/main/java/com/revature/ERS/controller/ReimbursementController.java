@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "${ui.url}", allowCredentials = "true")
 public class ReimbursementController {
 
     @Autowired
