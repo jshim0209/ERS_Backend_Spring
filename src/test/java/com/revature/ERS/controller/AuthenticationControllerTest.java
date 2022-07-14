@@ -1,7 +1,9 @@
 package com.revature.ERS.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.ERS.dto.LoginDto;
+import com.revature.ERS.exception.BadParameterException;
 import com.revature.ERS.model.TokenResponse;
 import com.revature.ERS.model.User;
 import com.revature.ERS.model.UserRole;
@@ -19,6 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import javax.security.auth.login.FailedLoginException;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,10 +59,11 @@ class AuthenticationControllerTest {
     }
 
     @BeforeEach
-    void init() {
+    void init() throws JsonProcessingException {
         loginDto = new LoginDto("jshim", "jiwon1234");
         userRole = new UserRole(1, "employee");
         user = new User(1, "Jiwon", "Shim", "jshim", "jiwon1234", "jshim@email.com", userRole);
+        jsonLoginDto = mapper.writeValueAsString(loginDto);
     }
 
     @Test
@@ -66,7 +72,6 @@ class AuthenticationControllerTest {
         String jwt = jwtService.createJwt(user);
 
         tokenResponse = new TokenResponse(jwt, user.getId(), user.getUsername(), user.getRole().getRole(), user.getFirstName());
-        jsonLoginDto = mapper.writeValueAsString(loginDto);
         jsonTokenResponse = mapper.writeValueAsString(tokenResponse);
 
         this.mockMvc.perform(post("/login")
@@ -74,5 +79,25 @@ class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(jsonTokenResponse))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void invalidUsername_or_password() throws Exception {
+        when(authService.login(loginDto)).thenThrow(FailedLoginException.class);
+
+        this.mockMvc.perform(post("/login")
+                .content(jsonLoginDto)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void blankUsername_or_password() throws Exception {
+        when(authService.login(loginDto)).thenThrow(BadParameterException.class);
+
+        this.mockMvc.perform(post("/login")
+                .content(jsonLoginDto)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
