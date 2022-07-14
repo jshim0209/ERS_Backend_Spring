@@ -40,7 +40,7 @@ public class ReimbursementController {
         Reimbursement addedReimbursement = new Reimbursement();
 
         UserDto user = userService.getUserById(Integer.parseInt(userId));
-        Status pending = new Status(1, "pending");
+        Status pending = new Status(1, "Pending");
 
         addedReimbursement.setAmount(ardto.getAmount());
         addedReimbursement.setDescription(ardto.getDescription());
@@ -65,9 +65,9 @@ public class ReimbursementController {
     }
 
     @GetMapping("/users/{userId}/reimbursements")
-    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") String userId
+    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId
     ) {
-        UserDto user = userService.getUserById(Integer.parseInt(userId));
+        UserDto user = userService.getUserById(userId);
         List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUser(modelMapper.map(user, User.class));
 
         return ResponseEntity.ok(reimbursementDtos);

@@ -126,4 +126,40 @@ class UserServiceTest {
         User actual = userService.createUser(signUpDto);
         Assertions.assertEquals(expected, actual);
     }
+
+    @Test
+    void registerUser_negative_existringUsername() {
+        SignUpDto signUpDto = new SignUpDto("firstName3", "lastName3", "username1", "password3", "email3", fakeUserRole1);
+
+        User addedUser = new User();
+        addedUser.setFirstName("firstName3");
+        addedUser.setLastName("lastName3");
+        addedUser.setUsername("username1");
+        addedUser.setPassword("password3");
+        addedUser.setEmail("email3");
+        addedUser.setRole(fakeUserRole1);
+
+        when(userRepo.findByUsername(addedUser.getUsername())).thenReturn(fakeUser1);
+        Assertions.assertThrows(UserExistsException.class, () -> {
+            userService.createUser(signUpDto);
+        });
+    }
+
+    @Test
+    void registerUser_negative_existringEmail() {
+        SignUpDto signUpDto = new SignUpDto("firstName3", "lastName3", "username3", "password3", "email1", fakeUserRole1);
+
+        User addedUser = new User();
+        addedUser.setFirstName("firstName3");
+        addedUser.setLastName("lastName3");
+        addedUser.setUsername("username3");
+        addedUser.setPassword("password3");
+        addedUser.setEmail("email1");
+        addedUser.setRole(fakeUserRole1);
+
+        when(userRepo.findByEmail(addedUser.getEmail())).thenReturn(fakeUser1);
+        Assertions.assertThrows(UserExistsException.class, () -> {
+            userService.createUser(signUpDto);
+        });
+    }
 }

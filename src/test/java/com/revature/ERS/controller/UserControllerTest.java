@@ -1,7 +1,9 @@
 package com.revature.ERS.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.ERS.dto.SignUpDto;
+import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.TokenResponse;
 import com.revature.ERS.model.User;
 import com.revature.ERS.model.UserRole;
@@ -47,6 +49,9 @@ class UserControllerTest {
     private TokenResponse tokenResponse;
     private String jsonSignUpDto;
     private String jsonTokenResponse;
+    private User userExisted;
+    private SignUpDto invalidUsername;
+    private SignUpDto invalidEmail;
 
     @BeforeAll
     void setup() {
@@ -55,10 +60,15 @@ class UserControllerTest {
     }
 
     @BeforeEach
-    void init() {
+    void init() throws JsonProcessingException {
         userRole = new UserRole(1, "employee");
-        user = new User(1, "Jiwon", "Shim", "jshim", "password", "jshim@email.com", userRole);
+        user = new User(2, "Jiwon", "Shim", "jshim", "password", "jshim@email.com", userRole);
         signUpDto = new SignUpDto("Jiwon", "Shim", "jshim", "password", "jshim@email.com", userRole);
+//        userExisted = new User(1, "Minah", "Kim", "mkim", "password", "mkim@email.com", userRole);
+//        invalidUsername = new SignUpDto("Jiwon", "Shim", "mkim", "password", "jshim@email.com", userRole);
+//        invalidEmail = new SignUpDto("Jiwon", "Shim", "jshim", "password", "mkim@email.com", userRole);
+        jsonSignUpDto = mapper.writeValueAsString(signUpDto);
+
     }
 
     @Test
@@ -67,7 +77,6 @@ class UserControllerTest {
         String jwt = jwtService.createJwt(user);
 
         tokenResponse = new TokenResponse(jwt, user.getId(), user.getUsername(), user.getRole().getRole(), user.getFirstName());
-        jsonSignUpDto = mapper.writeValueAsString(signUpDto);
         jsonTokenResponse = mapper.writeValueAsString(tokenResponse);
 
         this.mockMvc.perform(post("/signUp")
@@ -75,5 +84,15 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(jsonTokenResponse))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void userExistException() throws Exception {
+        when(userService.createUser(signUpDto)).thenThrow(UserExistsException.class);
+
+        mockMvc.perform(post("/signUp")
+                .content(jsonSignUpDto)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

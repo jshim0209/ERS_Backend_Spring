@@ -15,7 +15,7 @@ import java.util.Date;
 public class JwtService {
     private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String createJwt(User user) throws JsonProcessingException {
+    public static String createJwt(User user) throws JsonProcessingException {
         UserDto dto = new UserDto(user.getId(), user.getFirstName(),
                 user.getLastName(), user.getEmail(), user.getUsername(), user.getRole().getRole());
 
@@ -37,4 +37,22 @@ public class JwtService {
     private static boolean checkExpiration(Claims claims) {
         return claims.getExpiration().after(Date.from(Instant.now()));
     }
+
+    public static String setExpiration(String jwt, Date newDate){
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt);
+            Claims newClaims = claims.getBody().setExpiration(newDate);
+            return Jwts.builder()
+                    .setClaims(newClaims)
+                    .signWith(key)
+                    .compact();
+
+        } catch (IllegalArgumentException | SignatureException e) {
+            return jwt;
+        }
+    }
+
 }
