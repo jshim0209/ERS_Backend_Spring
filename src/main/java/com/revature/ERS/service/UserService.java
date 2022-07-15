@@ -1,7 +1,7 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.SignUpDto;
 import com.revature.ERS.dto.UserDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.UserRepository;
@@ -43,16 +43,20 @@ public class UserService {
         return null;
     }
 
-    public UserDto createUser(User user) throws UserExistsException {
+    public User createUser(SignUpDto signUpDto) throws UserExistsException {
 
-        User existingUser = userRepo.findByUsernameAndEmail(user.getUsername(), user.getEmail());
+        User userAdded = new User(0, signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getUsername(), signUpDto.getPassword(), signUpDto.getEmail(), signUpDto.getUserRole());
 
-        if (existingUser != null) {
+        User checkUserByUseranme = userRepo.findByUsername(signUpDto.getUsername());
+        User checkUserByEmail = userRepo.findByEmail(signUpDto.getEmail());
 
-            throw new UserExistsException("An account exists with username of " + user.getUsername() + " and/or emaild address of " + user.getEmail());
-
+        if (checkUserByUseranme != null) {
+            throw new UserExistsException("An account exists with username of " + signUpDto.getUsername());
+        }
+        else if (checkUserByEmail != null) {
+            throw new UserExistsException("An account exists with email of " + signUpDto.getEmail());
         } else {
-            return modelMapper.map(userRepo.save(user), UserDto.class);
+            return userRepo.save(userAdded);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.SignUpDto;
 import com.revature.ERS.dto.UserDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.model.UserRole;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     UserRepository userRepo;
@@ -76,8 +76,8 @@ public class UserServiceTest {
         when(userRepo.findAll()).thenReturn(fakeUsers);
 
         List<UserDto> expected = new ArrayList<>();
-        expected.add(new UserDto(1, "firstName1", "lastName1", "email1", "username1", fakeUserRole1));
-        expected.add(new UserDto(2, "firstName2", "lastName2", "email2", "username2", fakeUserRole2));
+        expected.add(new UserDto(1, "firstName1", "lastName1", "email1", "username1", "employee"));
+        expected.add(new UserDto(2, "firstName2", "lastName2", "email2", "username2", "manager"));
 
         List<UserDto> actual = userService.getAllUsers();
 
@@ -86,11 +86,11 @@ public class UserServiceTest {
     }
 
     @Test
-    void test_get_userById_positive() throws NotFound {
+    void test_get_userById_positive() {
 
         when(userRepo.findById(1)).thenReturn(Optional.of(fakeUser1));
 
-        UserDto expected = new UserDto(1, "firstName1", "lastName1", "email1", "username1", fakeUserRole1);
+        UserDto expected = new UserDto(1, "firstName1", "lastName1", "email1", "username1", "employee");
 
         UserDto actual = userService.getUserById(1);
 
@@ -100,8 +100,9 @@ public class UserServiceTest {
     @Test
     void test_register_user_positive() throws UserExistsException {
 
+        SignUpDto signUpDto = new SignUpDto("firstName3", "lastName3", "username3", "password3", "email3", fakeUserRole1);
+
         User addedUser = new User();
-        addedUser.setId(3);
         addedUser.setFirstName("firstName3");
         addedUser.setLastName("lastName3");
         addedUser.setUsername("username3");
@@ -109,18 +110,55 @@ public class UserServiceTest {
         addedUser.setEmail("email3");
         addedUser.setRole(fakeUserRole1);
 
-        when(userRepo.findByUsernameAndEmail(addedUser.getUsername(), addedUser.getEmail())).thenReturn(null);
+        when(userRepo.findByUsername(addedUser.getUsername())).thenReturn(null);
+        when(userRepo.findByEmail(addedUser.getEmail())).thenReturn(null);
         when(userRepo.save(addedUser)).thenReturn(addedUser);
 
-        UserDto expected = new UserDto();
-        expected.setId(3);
+        User expected = new User();
         expected.setFirstName("firstName3");
         expected.setLastName("lastName3");
         expected.setUsername("username3");
+        expected.setPassword("password3");
         expected.setEmail("email3");
-        expected.setUserRole(fakeUserRole1);
+        expected.setRole(fakeUserRole1);
 
-        UserDto actual = userService.createUser(addedUser);
+        User actual = userService.createUser(signUpDto);
         Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void registerUser_negative_existringUsername() {
+        SignUpDto signUpDto = new SignUpDto("firstName3", "lastName3", "username1", "password3", "email3", fakeUserRole1);
+
+        User addedUser = new User();
+        addedUser.setFirstName("firstName3");
+        addedUser.setLastName("lastName3");
+        addedUser.setUsername("username1");
+        addedUser.setPassword("password3");
+        addedUser.setEmail("email3");
+        addedUser.setRole(fakeUserRole1);
+
+        when(userRepo.findByUsername(addedUser.getUsername())).thenReturn(fakeUser1);
+        Assertions.assertThrows(UserExistsException.class, () -> {
+            userService.createUser(signUpDto);
+        });
+    }
+
+    @Test
+    void registerUser_negative_existringEmail() {
+        SignUpDto signUpDto = new SignUpDto("firstName3", "lastName3", "username3", "password3", "email1", fakeUserRole1);
+
+        User addedUser = new User();
+        addedUser.setFirstName("firstName3");
+        addedUser.setLastName("lastName3");
+        addedUser.setUsername("username3");
+        addedUser.setPassword("password3");
+        addedUser.setEmail("email1");
+        addedUser.setRole(fakeUserRole1);
+
+        when(userRepo.findByEmail(addedUser.getEmail())).thenReturn(fakeUser1);
+        Assertions.assertThrows(UserExistsException.class, () -> {
+            userService.createUser(signUpDto);
+        });
     }
 }

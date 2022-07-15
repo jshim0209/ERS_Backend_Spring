@@ -2,6 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.6.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
+	id "org.sonarqube" version "3.1.1"
 }
 
 group = 'com.revature'
@@ -24,12 +26,10 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'com.h2database:h2'
-	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
 	implementation 'org.modelmapper:modelmapper:3.1.0'
-
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -37,6 +37,53 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.7"
+	reportsDirectory = layout.buildDirectory.dir('jacoco')
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		csv.required = false
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "jshim0209_ERS_Backend_Spring"
+		property "sonar.organization", "jshim0209"
+		property "sonar.host.url", "https://sonarcloud.io"
+		// Sonar Coverage Exclusions excludes your files from the coverage.
+		// Change it so your main application file is not included. I added the model folder as an example.
+		property "sonar.coverage.exclusions", "**/*Application*, **/model/**, **/aspect/**"
+		// Sonar Exclusions makes it so your files don't exist at all to SonarQube. It's great for models as you will get a "Implement DTO or Simple POJO" error if you don't.
+		// I added model folder for example sake.
+		property "sonar.exclusions", "**/model/**, **/aspect/**"
+
+	}
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'com.revature.main.ErsApplication'
+	}
+
+	from {
+		(configurations.runtimeClasspath).collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+
+	duplicatesStrategy 'exclude'
 }
 
 

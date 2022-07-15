@@ -1,5 +1,6 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.LoginDto;
 import com.revature.ERS.exception.BadParameterException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.model.UserRole;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationServiceTest {
+class AuthenticationServiceTest {
 
     @Mock
     UserRepository userRepo;
@@ -35,6 +36,10 @@ public class AuthenticationServiceTest {
 
     UserRole fakeRole = new UserRole();
     User fakeUser = new User();
+    LoginDto loginDto = new LoginDto();
+    LoginDto invalidUsername = new LoginDto();
+    LoginDto invalidPassword = new LoginDto();
+    LoginDto blankLoginDto = new LoginDto();
 
     @BeforeEach
     public void setup() {
@@ -49,6 +54,17 @@ public class AuthenticationServiceTest {
         fakeUser.setEmail("email");
         fakeUser.setRole(fakeRole);
 
+        loginDto.setUsername("username");
+        loginDto.setPassword("password");
+
+        invalidUsername.setUsername("invalid");
+        invalidUsername.setPassword("password");
+
+        invalidPassword.setUsername("username");
+        invalidPassword.setPassword("invalid");
+
+        blankLoginDto.setUsername("");
+        blankLoginDto.setPassword("");
     }
 
     @Test
@@ -57,9 +73,7 @@ public class AuthenticationServiceTest {
 
         when(userRepo.findByUsernameAndPassword("username", "password")).thenReturn(fakeUser);
 
-//        UserDto expected = new UserDto(1, "firstName", "lastName", "email", "username", fakeRole);
-
-        User actual = authService.login("username", "password");
+        User actual = authService.login(loginDto);
 
         User expected = fakeUser;
 
@@ -69,17 +83,25 @@ public class AuthenticationServiceTest {
 
     @Test
     @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    void test_login_invalidEmailAndPassword() throws FailedLoginException {
+    void test_login_invalidUsername() {
         Assertions.assertThrows(FailedLoginException.class, () -> {
-            authService.login("invalid", "invalid");
+            authService.login(invalidUsername);
         });
     }
 
     @Test
     @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    void test_login_BadParameter() throws BadParameterException {
+    void test_login_invalidPassword() {
+        Assertions.assertThrows(FailedLoginException.class, () -> {
+            authService.login(invalidPassword);
+        });
+    }
+
+    @Test
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    void test_login_BadParameter() {
         Assertions.assertThrows(BadParameterException.class, () -> {
-            authService.login("","");
+            authService.login(blankLoginDto);
         });
     }
 }

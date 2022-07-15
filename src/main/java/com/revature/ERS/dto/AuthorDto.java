@@ -10,7 +10,5 @@ import lombok.*;
 @EqualsAndHashCode
 public class AuthorDto {
 
-    private int id;
     private String username;
-    private String email;
 }

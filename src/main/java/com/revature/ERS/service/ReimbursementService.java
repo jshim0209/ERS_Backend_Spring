@@ -1,9 +1,7 @@
 package com.revature.ERS.service;
 
 import com.revature.ERS.dto.ReimbursementDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.model.Reimbursement;
-import com.revature.ERS.model.User;
 import com.revature.ERS.repository.ReimbursementRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,7 @@ public class ReimbursementService {
         return reimbursementDtos;
     }
 
-    public ReimbursementDto getReimbursementById(int id) throws NotFound {
+    public ReimbursementDto getReimbursementById(int id) {
 
         Optional<Reimbursement> optional = reimbRepo.findById(id);
 
@@ -49,10 +47,20 @@ public class ReimbursementService {
         return null;
     }
 
-    public List<ReimbursementDto> getReimbursementsByUser(User user) {
+    public List<ReimbursementDto> getReimbursementsByUserId(int userId) {
         List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
 
-        List<Reimbursement> reimbursements = reimbRepo.findByUser(user);
+        List<Reimbursement> reimbursements = reimbRepo.findByUser(userId);
+        for (Reimbursement r : reimbursements) {
+            reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
+        }
+        return reimbursementDtos;
+    }
+
+    public List<ReimbursementDto> getReimbursementsByStatus(Optional<String> status) {
+        List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
+
+        List<Reimbursement> reimbursements = reimbRepo.findByStatus(status);
         for (Reimbursement r : reimbursements) {
             reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
         }

@@ -12,6 +12,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     public abstract User findByUsernameAndPassword(String username, String password) throws FailedLoginException, BadParameterException;
 
-    public abstract User findByUsernameAndEmail(String username, String email);
+    public abstract User findByUsername(String username);
+
+    public abstract User findByEmail(String email);
 
 }
