@@ -64,10 +64,10 @@ sonarqube {
 		property "sonar.host.url", "https://sonarcloud.io"
 		// Sonar Coverage Exclusions excludes your files from the coverage.
 		// Change it so your main application file is not included. I added the model folder as an example.
-		property "sonar.coverage.exclusions", "**/*Application*, **/model/**"
+		property "sonar.coverage.exclusions", "**/*Application*, **/model/**, **/aspect/**"
 		// Sonar Exclusions makes it so your files don't exist at all to SonarQube. It's great for models as you will get a "Implement DTO or Simple POJO" error if you don't.
 		// I added model folder for example sake.
-		property "sonar.exclusions", "**/model/**"
+		property "sonar.exclusions", "**/model/**, **/aspect/**"
 
 	}
 }

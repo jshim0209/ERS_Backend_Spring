@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "${ui.url}", allowCredentials = "true")
 public class ReimbursementController {
 
     @Autowired
@@ -39,7 +40,7 @@ public class ReimbursementController {
         Reimbursement addedReimbursement = new Reimbursement();
 
         UserDto user = userService.getUserById(Integer.parseInt(userId));
-        Status pending = new Status(1, "pending");
+        Status pending = new Status(1, "Pending");
 
         addedReimbursement.setAmount(ardto.getAmount());
         addedReimbursement.setDescription(ardto.getDescription());
@@ -64,10 +65,9 @@ public class ReimbursementController {
     }
 
     @GetMapping("/users/{userId}/reimbursements")
-    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") String userId
+    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId
     ) {
-        UserDto user = userService.getUserById(Integer.parseInt(userId));
-        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUser(modelMapper.map(user, User.class));
+        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUserId(userId);
 
         return ResponseEntity.ok(reimbursementDtos);
     }

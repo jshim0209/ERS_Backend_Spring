@@ -37,7 +37,8 @@ class AuthenticationServiceTest {
     UserRole fakeRole = new UserRole();
     User fakeUser = new User();
     LoginDto loginDto = new LoginDto();
-    LoginDto invalidLoginDto = new LoginDto();
+    LoginDto invalidUsername = new LoginDto();
+    LoginDto invalidPassword = new LoginDto();
     LoginDto blankLoginDto = new LoginDto();
 
     @BeforeEach
@@ -56,8 +57,11 @@ class AuthenticationServiceTest {
         loginDto.setUsername("username");
         loginDto.setPassword("password");
 
-        invalidLoginDto.setUsername("invalid");
-        invalidLoginDto.setPassword("invalid");
+        invalidUsername.setUsername("invalid");
+        invalidUsername.setPassword("password");
+
+        invalidPassword.setUsername("username");
+        invalidPassword.setPassword("invalid");
 
         blankLoginDto.setUsername("");
         blankLoginDto.setPassword("");
@@ -79,15 +83,23 @@ class AuthenticationServiceTest {
 
     @Test
     @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    void test_login_invalidEmailAndPassword() throws FailedLoginException {
+    void test_login_invalidUsername() {
         Assertions.assertThrows(FailedLoginException.class, () -> {
-            authService.login(invalidLoginDto);
+            authService.login(invalidUsername);
         });
     }
 
     @Test
     @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-    void test_login_BadParameter() throws BadParameterException {
+    void test_login_invalidPassword() {
+        Assertions.assertThrows(FailedLoginException.class, () -> {
+            authService.login(invalidPassword);
+        });
+    }
+
+    @Test
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+    void test_login_BadParameter() {
         Assertions.assertThrows(BadParameterException.class, () -> {
             authService.login(blankLoginDto);
         });
