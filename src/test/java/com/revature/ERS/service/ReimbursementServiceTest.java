@@ -1,5 +1,6 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.AddReimbursementDto;
 import com.revature.ERS.dto.AuthorDto;
 import com.revature.ERS.dto.ReimbursementDto;
 import com.revature.ERS.dto.ResolverDto;
@@ -26,6 +27,9 @@ class ReimbursementServiceTest {
     @Mock
     ReimbursementRepository reimbRepo;
 
+    @Mock
+    UserService userService;
+
     @Spy
     ModelMapper modelMapper = new ModelMapper();
 
@@ -43,6 +47,7 @@ class ReimbursementServiceTest {
     Status fakeStatus2 = new Status();
     Type fakeType1 = new Type();
     Type fakeType2 = new Type();
+    AuthorDto fakeAuthorDto = new AuthorDto();
 
     @BeforeEach
     public void setup() {
@@ -112,6 +117,8 @@ class ReimbursementServiceTest {
         fakeReimb3.setStatus(fakeStatus2);
         fakeReimb3.setType(fakeType2);
 
+        fakeAuthorDto.setUsername("username1");
+
     }
 
     @Test
@@ -153,26 +160,33 @@ class ReimbursementServiceTest {
     @Test
     void test_add_reimbursement_positive() {
 
-        AuthorDto fakeUserDto1 = new AuthorDto("username1");
+        when(userService.getUserById(fakeUser1.getId())).thenReturn(fakeUser1);
+
+        AddReimbursementDto dto = new AddReimbursementDto();
+        dto.setAmount(300.00);
+        dto.setDescription("Hotel");
+        dto.setReceipt("image2.jpg");
+        dto.setTimeSubmitted("05/08/2022");
+        dto.setType(fakeType1);
 
         Reimbursement addedReimb = new Reimbursement();
-        addedReimb.setId(3);
-        addedReimb.setAmount(300.00);
-        addedReimb.setDescription("Hotel");
-        addedReimb.setTimeSubmitted("05/08/2022");
+        addedReimb.setId(0);
+        addedReimb.setAmount(dto.getAmount());
+        addedReimb.setDescription(dto.getDescription());
+        addedReimb.setTimeSubmitted(dto.getTimeSubmitted());
         addedReimb.setTimeResolved(null);
-        addedReimb.setReceipt("image2.jpg");
-        addedReimb.setType(fakeType1);
+        addedReimb.setReceipt(dto.getReceipt());
+        addedReimb.setType(dto.getType());
         addedReimb.setStatus(fakeStatus2);
         addedReimb.setAuthor(fakeUser1);
         addedReimb.setResolver(null);
 
         when(reimbRepo.save(addedReimb)).thenReturn(addedReimb);
 
-        ReimbursementDto expected = new ReimbursementDto(3, 300.00, "05/08/2022", null, "Hotel", "image2.jpg",
-                fakeUserDto1, null, fakeStatus2, fakeType1 );
+        ReimbursementDto expected = new ReimbursementDto(0, 300.00, "05/08/2022", null, "Hotel", "image2.jpg",
+                fakeAuthorDto, null, fakeStatus2, fakeType1 );
 
-        ReimbursementDto actual = reimbService.addReimbursement(addedReimb);
+        ReimbursementDto actual = reimbService.addReimbursement(fakeUser1.getId(), dto);
         Assertions.assertEquals(expected, actual);
     }
 

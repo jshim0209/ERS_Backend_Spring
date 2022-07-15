@@ -1,7 +1,10 @@
 package com.revature.ERS.service;
 
+import com.revature.ERS.dto.AddReimbursementDto;
 import com.revature.ERS.dto.ReimbursementDto;
 import com.revature.ERS.model.Reimbursement;
+import com.revature.ERS.model.Status;
+import com.revature.ERS.model.User;
 import com.revature.ERS.repository.ReimbursementRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +18,28 @@ import java.util.Optional;
 public class ReimbursementService {
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     ReimbursementRepository reimbRepo;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public ReimbursementDto addReimbursement(Reimbursement reimbursement) {
-        ReimbursementDto addedReimbursement = modelMapper.map(reimbRepo.save(reimbursement), ReimbursementDto.class);
-        return addedReimbursement;
+    public ReimbursementDto addReimbursement(int userId, AddReimbursementDto reimbDto) {
+        User user = userService.getUserById(userId);
+        Status pending = new Status(1, "Pending");
+
+        Reimbursement reimbursement = new Reimbursement(
+                0, reimbDto.getAmount(), reimbDto.getTimeSubmitted(), null, reimbDto.getDescription(),
+                reimbDto.getReceipt(), user, null, pending, reimbDto.getType()
+        );
+
+        Reimbursement addedReimbursement = reimbRepo.save(reimbursement);
+
+        ReimbursementDto newReimbursement = modelMapper.map(addedReimbursement, ReimbursementDto.class);
+
+        return newReimbursement;
     }
 
     public List<ReimbursementDto> getAllReimbursements() {

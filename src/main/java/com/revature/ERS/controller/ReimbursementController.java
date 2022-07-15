@@ -2,10 +2,6 @@ package com.revature.ERS.controller;
 
 import com.revature.ERS.dto.AddReimbursementDto;
 import com.revature.ERS.dto.ReimbursementDto;
-import com.revature.ERS.dto.UserDto;
-import com.revature.ERS.model.Reimbursement;
-import com.revature.ERS.model.Status;
-import com.revature.ERS.model.User;
 import com.revature.ERS.service.JwtService;
 import com.revature.ERS.service.ReimbursementService;
 import com.revature.ERS.service.UserService;
@@ -35,24 +31,11 @@ public class ReimbursementController {
     ReimbursementDto rdto = new ReimbursementDto();
 
     @PostMapping("/users/{userId}/reimbursement")
-    public ResponseEntity<ReimbursementDto> addReimbursement(@PathVariable ("userId") String userId, @RequestBody AddReimbursementDto ardto) {
+    public ResponseEntity<ReimbursementDto> addReimbursement(@PathVariable ("userId") int userId, @RequestBody AddReimbursementDto ardto) {
 
-        Reimbursement addedReimbursement = new Reimbursement();
+        ReimbursementDto newReimbursement = reimbursementService.addReimbursement(userId, ardto);
 
-        UserDto user = userService.getUserById(Integer.parseInt(userId));
-        Status pending = new Status(1, "Pending");
-
-        addedReimbursement.setAmount(ardto.getAmount());
-        addedReimbursement.setDescription(ardto.getDescription());
-        addedReimbursement.setReceipt(ardto.getReceipt());
-        addedReimbursement.setTimeSubmitted(ardto.getTimeSubmitted());
-        addedReimbursement.setType(ardto.getType());
-        addedReimbursement.setAuthor(modelMapper.map(user, User.class));
-        addedReimbursement.setStatus(pending);
-
-        ReimbursementDto newReimb = reimbursementService.addReimbursement(addedReimbursement);
-
-        return ResponseEntity.ok(newReimb);
+        return ResponseEntity.ok(newReimbursement);
     }
 
     @GetMapping("/reimbursements")
