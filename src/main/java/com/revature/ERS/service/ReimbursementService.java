@@ -1,6 +1,7 @@
 package com.revature.ERS.service;
 
 import com.revature.ERS.dto.ReimbursementDto;
+import com.revature.ERS.dto.UserDto;
 import com.revature.ERS.model.Reimbursement;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.ReimbursementRepository;
@@ -48,10 +49,10 @@ public class ReimbursementService {
         return null;
     }
 
-    public List<ReimbursementDto> getReimbursementsByUser(User user) {
+    public List<ReimbursementDto> getReimbursementsByUserId(int userId) {
         List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
 
-        List<Reimbursement> reimbursements = reimbRepo.findByUser(user);
+        List<Reimbursement> reimbursements = reimbRepo.findByUser(userId);
         for (Reimbursement r : reimbursements) {
             reimbursementDtos.add(modelMapper.map(r, ReimbursementDto.class));
         }

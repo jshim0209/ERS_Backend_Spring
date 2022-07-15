@@ -2,7 +2,6 @@ package com.revature.ERS.service;
 
 import com.revature.ERS.dto.SignUpDto;
 import com.revature.ERS.dto.UserDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.model.UserRole;
@@ -87,7 +86,7 @@ class UserServiceTest {
     }
 
     @Test
-    void test_get_userById_positive() throws NotFound {
+    void test_get_userById_positive() {
 
         when(userRepo.findById(1)).thenReturn(Optional.of(fakeUser1));
 

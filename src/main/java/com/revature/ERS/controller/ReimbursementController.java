@@ -67,8 +67,7 @@ public class ReimbursementController {
     @GetMapping("/users/{userId}/reimbursements")
     public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId
     ) {
-        UserDto user = userService.getUserById(userId);
-        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUser(modelMapper.map(user, User.class));
+        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUserId(userId);
 
         return ResponseEntity.ok(reimbursementDtos);
     }

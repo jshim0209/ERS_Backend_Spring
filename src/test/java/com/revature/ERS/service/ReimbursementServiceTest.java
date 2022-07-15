@@ -3,7 +3,6 @@ package com.revature.ERS.service;
 import com.revature.ERS.dto.AuthorDto;
 import com.revature.ERS.dto.ReimbursementDto;
 import com.revature.ERS.dto.ResolverDto;
-import com.revature.ERS.exception.NotFound;
 import com.revature.ERS.model.*;
 import com.revature.ERS.repository.ReimbursementRepository;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
@@ -139,7 +137,7 @@ class ReimbursementServiceTest {
     }
 
     @Test
-    void test_get_reimbursementById_positive() throws NotFound {
+    void test_get_reimbursementById_positive() {
 
         when(reimbRepo.findById(1)).thenReturn(Optional.of(fakeReimb1));
 
@@ -185,7 +183,7 @@ class ReimbursementServiceTest {
         fakeReimbs.add(fakeReimb1);
         fakeReimbs.add(fakeReimb2);
 
-        when(reimbRepo.findByUser(fakeUser1)).thenReturn(fakeReimbs);
+        when(reimbRepo.findByUser(fakeUser1.getId())).thenReturn(fakeReimbs);
 
         List<ReimbursementDto> expected = new ArrayList<>();
         expected.add(new ReimbursementDto(1, 1000.00, "05/07/2022",
@@ -196,7 +194,7 @@ class ReimbursementServiceTest {
                 null, "description1", "image1.jpg", new AuthorDto("username1"),
                 null, fakeStatus2, fakeType2));
 
-        List<ReimbursementDto> actual = reimbService.getReimbursementsByUser(fakeUser1);
+        List<ReimbursementDto> actual = reimbService.getReimbursementsByUserId(fakeUser1.getId());
 
         Assertions.assertEquals(expected, actual);
     }

@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface ReimbursementRepository extends JpaRepository<Reimbursement, Integer> {
 
-    @Query("select r from Reimbursement r where r.author=?1")
-    List<Reimbursement> findByUser (User user);
+    @Query("select r from Reimbursement r where r.author.id=?1")
+    List<Reimbursement> findByUser (int userId);
 
     @Query("select r from Reimbursement r where r.status.status=?1")
     List<Reimbursement> findByStatus (Optional<String> status);
