@@ -37,9 +37,7 @@ public class ReimbursementService {
 
         Reimbursement addedReimbursement = reimbRepo.save(reimbursement);
 
-        ReimbursementDto newReimbursement = modelMapper.map(addedReimbursement, ReimbursementDto.class);
-
-        return newReimbursement;
+        return modelMapper.map(addedReimbursement, ReimbursementDto.class);
     }
 
     public List<ReimbursementDto> getAllReimbursements() {
