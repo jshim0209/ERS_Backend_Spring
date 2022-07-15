@@ -2,7 +2,6 @@ package com.revature.ERS.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.revature.ERS.dto.SignUpDto;
-import com.revature.ERS.dto.UserDto;
 import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.TokenResponse;
 import com.revature.ERS.model.User;
