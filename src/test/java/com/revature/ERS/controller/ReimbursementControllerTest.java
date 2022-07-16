@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.ERS.dto.*;
 import com.revature.ERS.model.*;
 import com.revature.ERS.service.ReimbursementService;
-import com.revature.ERS.service.UserService;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,14 +12,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -42,12 +42,11 @@ class ReimbursementControllerTest {
     private Type type;
     private static final List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
     private AuthorDto author;
+    private AddReimbursementDto addReimbursementDto;
+    private ReimbursementDto newReimbDto;
 
     @Mock
     ReimbursementService reimbursementService;
-
-    @Mock
-    UserService userService;
 
     @InjectMocks
     ReimbursementController reimbursementController;
@@ -78,12 +77,8 @@ class ReimbursementControllerTest {
         reimbursementDtos.add(modelMapper.map(reimbursement1, ReimbursementDto.class));
         reimbursementDtos.add(modelMapper.map(reimbursement2, ReimbursementDto.class));
         author = new AuthorDto("jshim");
-
-//        user2Dto = new UserDto(3, "Minah", "Kim", "mkim@email.com", "mkim", manager.getRole());
-//        addReimbursementDto = new AddReimbursementDto(700, "05/09/2022", "reimb3 description", null, type);
-//        newReimbDto = new ReimbursementDto(3, 700.00, "05/09/2022", null, "reimb3 description", null, author, null, pending, type);
-//        user1Dto = new UserDto(2, "Jiwon", "Shim", "jshim@email.com", "jshim", employee.getRole());
-
+        addReimbursementDto = new AddReimbursementDto(700, "05/09/2022", "reimb3 description", null, type);
+        newReimbDto = new ReimbursementDto(3, 700.00, "05/09/2022", null, "reimb3 description", null, author, null, pending, type);
     }
 
     @Test
@@ -105,42 +100,15 @@ class ReimbursementControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    void addReimbursement_positive() throws Exception {
-//
-//
-//        addReimbursementDto = new AddReimbursementDto(700, "05/09/2022", "reimb3 description", null, type);
-//
-//        when(userService.getUserById(user1.getId())).thenReturn(user1Dto);
-//
-//        userId = String.valueOf(user1.getId());
-//
-//        newReimb = new Reimbursement();
-//
-//        newReimb.setId(3);
-//        newReimb.setAmount(addReimbursementDto.getAmount());
-//        newReimb.setDescription(addReimbursementDto.getDescription());
-//        newReimb.setTimeSubmitted(addReimbursementDto.getTimeSubmitted());
-//        newReimb.setType(addReimbursementDto.getType());
-//        newReimb.setAuthor(modelMapper.map(userService.getUserById(user1.getId()), User.class));
-//        newReimb.setStatus(pending);
-//
-//        System.out.println(newReimb.getAuthor());
-//
-//        when(reimbursementService.addReimbursement(newReimb)).thenReturn(newReimbDto);
-//        System.out.println(newReimb);
-//        System.out.println(newReimbDto);
-//
-//        jsonReimbursementDto = mapper.writeValueAsString(newReimbDto);
-//
-//        ResponseEntity<ReimbursementDto> actual = reimbursementController.addReimbursement(userId, addReimbursementDto);
-//        System.out.println(actual);
-//
-//        assertThat(actual).isEqualTo(jsonReimbursementDto);
-////        this.mockMvc.perform(post("/users/{userId}/reimbursement", userId)
-////                        .contentType(MediaType.APPLICATION_JSON)
-////                        .content(jsonAddReimbursementDto))
-////                .andExpect(content().json(jsonReimbursementDto))
-////                .andExpect(status().isOk());
-//    }
+    @Test
+    void addReimbursement_positive() throws Exception {
+
+        when(reimbursementService.addReimbursement(user1.getId(), addReimbursementDto)).thenReturn(newReimbDto);
+
+        this.mockMvc.perform(post("/users/{userId}/reimbursement", user1.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(addReimbursementDto)))
+                .andExpect(content().json(mapper.writeValueAsString(newReimbDto)))
+                .andExpect(status().isOk());
+    }
 }

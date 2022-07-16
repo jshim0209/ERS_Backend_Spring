@@ -34,11 +34,11 @@ public class UserService {
         return userDtos;
     }
 
-    public UserDto getUserById(int id) {
+    public User getUserById(int id) {
         Optional<User> optional = userRepo.findById(id);
 
         if(optional.isPresent()) {
-            return modelMapper.map(optional.get(), UserDto.class);
+            return modelMapper.map(optional, User.class);
         }
         return null;
     }

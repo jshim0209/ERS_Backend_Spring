@@ -90,9 +90,9 @@ class UserServiceTest {
 
         when(userRepo.findById(1)).thenReturn(Optional.of(fakeUser1));
 
-        UserDto expected = new UserDto(1, "firstName1", "lastName1", "email1", "username1", "employee");
+        User expected = new User(1, "firstName1", "lastName1", "username1", "password1", "email1", fakeUserRole1);
 
-        UserDto actual = userService.getUserById(1);
+        User actual = userService.getUserById(1);
 
         Assertions.assertEquals(expected, actual);
     }
