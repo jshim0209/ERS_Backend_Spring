@@ -197,7 +197,7 @@ class ReimbursementServiceTest {
         fakeReimbs.add(fakeReimb1);
         fakeReimbs.add(fakeReimb2);
 
-        when(reimbRepo.findByUser(fakeUser1.getId())).thenReturn(fakeReimbs);
+        when(reimbRepo.findByAuthorId(fakeUser1.getId())).thenReturn(fakeReimbs);
 
         List<ReimbursementDto> expected = new ArrayList<>();
         expected.add(new ReimbursementDto(1, 1000.00, "05/07/2022",
@@ -225,7 +225,7 @@ class ReimbursementServiceTest {
         pendingReimbs.add(fakeReimb2);
         pendingReimbs.add(fakeReimb3);
 
-        when(reimbRepo.findByStatus(Optional.of("Pending"))).thenReturn(pendingReimbs);
+        when(reimbRepo.findByStatusId(Optional.of(1))).thenReturn(pendingReimbs);
 
         List<ReimbursementDto> expected = new ArrayList<>();
         expected.add(new ReimbursementDto(2, 500.00, "05/08/2022",
@@ -235,7 +235,7 @@ class ReimbursementServiceTest {
                 null, "description2", "image2.jpg", new AuthorDto("username1"),
                 null, fakeStatus2, fakeType2));
 
-        List<ReimbursementDto> actual = reimbService.getReimbursementsByStatus(Optional.of("Pending"));
+        List<ReimbursementDto> actual = reimbService.getReimbursementsByStatus(Optional.of(1));
 
         Assertions.assertEquals(expected, actual);
     }

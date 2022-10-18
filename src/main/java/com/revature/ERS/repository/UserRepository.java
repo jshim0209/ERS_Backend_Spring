@@ -10,10 +10,10 @@ import javax.security.auth.login.FailedLoginException;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    public abstract User findByUsernameAndPassword(String username, String password) throws FailedLoginException, BadParameterException;
+    User findByUsernameAndPassword(String username, String password) throws FailedLoginException, BadParameterException;
 
-    public abstract User findByUsername(String username);
+    User findByUsername(String username);
 
-    public abstract User findByEmail(String email);
+    User findByEmail(String email);
 
 }
