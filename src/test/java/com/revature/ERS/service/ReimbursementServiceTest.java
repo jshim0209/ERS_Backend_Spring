@@ -6,6 +6,7 @@ import com.revature.ERS.dto.ReimbursementDto;
 import com.revature.ERS.dto.ResolverDto;
 import com.revature.ERS.model.*;
 import com.revature.ERS.repository.ReimbursementRepository;
+import com.revature.ERS.repository.StatusRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ class ReimbursementServiceTest {
     ReimbursementRepository reimbRepo;
 
     @Mock
+    StatusRepository statusRepo;
+
+    @Mock
     UserService userService;
 
     @Spy
@@ -45,6 +49,7 @@ class ReimbursementServiceTest {
     UserRole fakeRole2 = new UserRole();
     Status fakeStatus1 = new Status();
     Status fakeStatus2 = new Status();
+    Status fakeStatus3 = new Status();
     Type fakeType1 = new Type();
     Type fakeType2 = new Type();
     AuthorDto fakeAuthorDto = new AuthorDto();
@@ -57,6 +62,7 @@ class ReimbursementServiceTest {
         fakeRole2.setId(2);
         fakeRole2.setRole("manager");
 
+        // employee
         fakeUser1.setId(1);
         fakeUser1.setFirstName("firstName1");
         fakeUser1.setLastName("lastName1");
@@ -65,6 +71,7 @@ class ReimbursementServiceTest {
         fakeUser1.setEmail("email1");
         fakeUser1.setRole(fakeRole1);
 
+        // manager
         fakeUser2.setId(2);
         fakeUser2.setFirstName("firstName2");
         fakeUser2.setLastName("lastName2");
@@ -79,11 +86,15 @@ class ReimbursementServiceTest {
         fakeStatus2.setId(1);
         fakeStatus2.setStatus("Pending");
 
+        fakeStatus3.setId(3);
+        fakeStatus3.setStatus("Rejected");
+
         fakeType1.setId(1);
         fakeType1.setType("Lodging");
         fakeType2.setId(2);
         fakeType2.setType("Food");
 
+        // approved
         fakeReimb1.setId(1);
         fakeReimb1.setAmount(1000.00);
         fakeReimb1.setTimeSubmitted("05/07/2022");
@@ -95,6 +106,7 @@ class ReimbursementServiceTest {
         fakeReimb1.setStatus(fakeStatus1);
         fakeReimb1.setType(fakeType1);
 
+        // pending
         fakeReimb2.setId(2);
         fakeReimb2.setAmount(500.00);
         fakeReimb2.setTimeSubmitted("05/08/2022");
@@ -106,6 +118,7 @@ class ReimbursementServiceTest {
         fakeReimb2.setStatus(fakeStatus2);
         fakeReimb2.setType(fakeType2);
 
+        // pending
         fakeReimb3.setId(3);
         fakeReimb3.setAmount(300.00);
         fakeReimb3.setTimeSubmitted("06/08/2022");
@@ -215,12 +228,6 @@ class ReimbursementServiceTest {
 
     @Test
     void test_find_reimbursement_byStatus_positive() {
-
-        List<Reimbursement> fakeReimbs = new ArrayList<>();
-        fakeReimbs.add(fakeReimb1);
-        fakeReimbs.add(fakeReimb2);
-        fakeReimbs.add(fakeReimb3);
-
         List<Reimbursement> pendingReimbs = new ArrayList<>();
         pendingReimbs.add(fakeReimb2);
         pendingReimbs.add(fakeReimb3);
@@ -236,6 +243,38 @@ class ReimbursementServiceTest {
                 null, fakeStatus2, fakeType2));
 
         List<ReimbursementDto> actual = reimbService.getReimbursementsByStatus(Optional.of(1));
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_getAllStatuses() {
+        List<Status> expected = new ArrayList<>();
+        expected.add(fakeStatus2);
+        expected.add(fakeStatus1);
+        expected.add(fakeStatus3);
+
+        when(statusRepo.findAll()).thenReturn(expected);
+
+        List<Status> actual = reimbService.getAllStatuses();
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_findReimbursementsByUserIdAndStatus_positive() {
+        List<Reimbursement> approvedReimbsByUser = new ArrayList<>();
+        approvedReimbsByUser.add(fakeReimb1);
+
+        when(reimbRepo.findByAuthorIdAndStatusId(1, Optional.of(2))).thenReturn(approvedReimbsByUser);
+
+        List<ReimbursementDto> expected = new ArrayList<>();
+        expected.add(new ReimbursementDto(1, 1000.00, "05/07/2022",
+                "05/08/2022", "description", "image.jpg",
+                new AuthorDto("username1"), new ResolverDto("username2"),
+                fakeStatus1, fakeType1));
+
+        List<ReimbursementDto> actual = reimbService.getReimbursementsByUserIdAndStatus(1, Optional.of(2));
 
         Assertions.assertEquals(expected, actual);
     }

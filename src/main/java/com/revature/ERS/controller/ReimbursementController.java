@@ -41,9 +41,7 @@ public class ReimbursementController {
 
     @GetMapping("/statuses")
     public ResponseEntity<List<Status>> getAllStatuses() {
-        List<Status> statuses = reimbursementService.getAllStatuses();
-
-        return ResponseEntity.ok(statuses);
+        return ResponseEntity.ok(reimbursementService.getAllStatuses());
     }
 
     @GetMapping("/reimbursements")
@@ -65,11 +63,4 @@ public class ReimbursementController {
         return ResponseEntity.ok(reimbursementDtos);
     }
 
-    //    @GetMapping("/users/{userId}/reimbursements")
-//    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId
-//    ) {
-//        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUserId(userId);
-//
-//        return ResponseEntity.ok(reimbursementDtos);
-//    }
 }

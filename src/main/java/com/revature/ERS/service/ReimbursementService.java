@@ -6,7 +6,7 @@ import com.revature.ERS.model.Reimbursement;
 import com.revature.ERS.model.Status;
 import com.revature.ERS.model.User;
 import com.revature.ERS.repository.ReimbursementRepository;
-import com.revature.ERS.repository.ReimbursementStatusRepository;
+import com.revature.ERS.repository.StatusRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class ReimbursementService {
     ReimbursementRepository reimbRepo;
 
     @Autowired
-    ReimbursementStatusRepository statusRepo;
+    StatusRepository statusRepo;
 
     @Autowired
     private ModelMapper modelMapper;
