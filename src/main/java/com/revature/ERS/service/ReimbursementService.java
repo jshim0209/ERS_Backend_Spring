@@ -5,8 +5,8 @@ import com.revature.ERS.dto.ReimbursementDto;
 import com.revature.ERS.model.Reimbursement;
 import com.revature.ERS.model.Status;
 import com.revature.ERS.model.User;
-import com.revature.ERS.repository.ReimbursementRepository;
-import com.revature.ERS.repository.StatusRepository;
+import com.revature.ERS.dao.ReimbursementRepository;
+import com.revature.ERS.dao.StatusRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,9 +45,7 @@ public class ReimbursementService {
     }
 
     public List<Status> getAllStatuses() {
-        List<Status> statuses = statusRepo.findAll();
-
-        return statuses;
+        return statusRepo.findAll();
     }
 
     public List<ReimbursementDto> getAllReimbursements() {

@@ -4,7 +4,7 @@ import com.revature.ERS.dto.LoginDto;
 import com.revature.ERS.exception.BadParameterException;
 import com.revature.ERS.model.User;
 import com.revature.ERS.model.UserRole;
-import com.revature.ERS.repository.UserRepository;
+import com.revature.ERS.dao.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

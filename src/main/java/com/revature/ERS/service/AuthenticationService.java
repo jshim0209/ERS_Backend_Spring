@@ -3,7 +3,7 @@ package com.revature.ERS.service;
 import com.revature.ERS.dto.LoginDto;
 import com.revature.ERS.exception.BadParameterException;
 import com.revature.ERS.model.User;
-import com.revature.ERS.repository.UserRepository;
+import com.revature.ERS.dao.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.security.auth.login.FailedLoginException;

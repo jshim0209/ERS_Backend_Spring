@@ -1,4 +1,4 @@
-package com.revature.ERS.repository;
+package com.revature.ERS.dao;
 
 import com.revature.ERS.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
