@@ -40,10 +40,11 @@ class ReimbursementControllerTest {
     private Status rejected;
     private Status approved;
     private Type type;
-    private static final List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
+    private final List<ReimbursementDto> reimbursementDtos = new ArrayList<>();
     private AuthorDto author;
     private AddReimbursementDto addReimbursementDto;
     private ReimbursementDto newReimbDto;
+    private final List<Status> statuses = new ArrayList<>();
 
     @Mock
     ReimbursementService reimbursementService;
@@ -79,6 +80,24 @@ class ReimbursementControllerTest {
         author = new AuthorDto("jshim");
         addReimbursementDto = new AddReimbursementDto(700, "05/09/2022", "reimb3 description", null, type);
         newReimbDto = new ReimbursementDto(3, 700.00, "05/09/2022", null, "reimb3 description", null, author, null, pending, type);
+
+        statuses.add(pending);
+        statuses.add(approved);
+        statuses.add(rejected);
+    }
+
+    @Test
+    void getAllStatuses() throws Exception {
+
+        System.out.println(statuses);
+
+        when(reimbursementService.getAllStatuses()).thenReturn(statuses);
+
+        System.out.println(mapper.writeValueAsString(statuses));
+
+        this.mockMvc.perform(get("/statuses"))
+                .andExpect(content().json(mapper.writeValueAsString(statuses)))
+                .andExpect(status().isOk());
     }
 
     @Test
