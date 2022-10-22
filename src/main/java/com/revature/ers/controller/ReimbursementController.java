@@ -21,10 +21,10 @@ public class ReimbursementController {
     private ReimbursementService reimbursementService;
 
     @Autowired
-    private UserService userService;
+    private static UserService userService;
 
     @Autowired
-    private JwtService jwtService;
+    private static JwtService jwtService;
 
     @Autowired
     private ModelMapper modelMapper;
