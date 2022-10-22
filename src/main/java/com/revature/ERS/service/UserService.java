@@ -4,7 +4,7 @@ import com.revature.ERS.dto.SignUpDto;
 import com.revature.ERS.dto.UserDto;
 import com.revature.ERS.exception.UserExistsException;
 import com.revature.ERS.model.User;
-import com.revature.ERS.repository.UserRepository;
+import com.revature.ERS.dao.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
