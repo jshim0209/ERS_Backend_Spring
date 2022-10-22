@@ -2,6 +2,7 @@ package com.revature.ERS.controller;
 
 import com.revature.ERS.dto.AddReimbursementDto;
 import com.revature.ERS.dto.ReimbursementDto;
+import com.revature.ERS.model.Status;
 import com.revature.ERS.service.JwtService;
 import com.revature.ERS.service.ReimbursementService;
 import com.revature.ERS.service.UserService;
@@ -38,8 +39,15 @@ public class ReimbursementController {
         return ResponseEntity.ok(newReimbursement);
     }
 
+    @GetMapping("/statuses")
+    public ResponseEntity<List<Status>> getAllStatuses() {
+        List<Status> statuses = reimbursementService.getAllStatuses();
+
+        return ResponseEntity.ok(statuses);
+    }
+
     @GetMapping("/reimbursements")
-    public ResponseEntity<List<ReimbursementDto>> getAllReimbursements(@RequestParam Optional<String> status) {
+    public ResponseEntity<List<ReimbursementDto>> getAllReimbursements(@RequestParam Optional<Integer> status) {
         List<ReimbursementDto> reimbursementDtos = reimbursementService.getAllReimbursements();
         if (status.isPresent()) {
             reimbursementDtos = reimbursementService.getReimbursementsByStatus(status);
@@ -48,10 +56,20 @@ public class ReimbursementController {
     }
 
     @GetMapping("/users/{userId}/reimbursements")
-    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId
-    ) {
+    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId,
+                                                                          @RequestParam Optional<Integer> status) {
         List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUserId(userId);
-
+        if (status.isPresent()) {
+            reimbursementDtos = reimbursementService.getReimbursementsByUserIdAndStatus(userId, status);
+        }
         return ResponseEntity.ok(reimbursementDtos);
     }
+
+    //    @GetMapping("/users/{userId}/reimbursements")
+//    public ResponseEntity<List<ReimbursementDto>> getReimbursementsByUser(@PathVariable ("userId") Integer userId
+//    ) {
+//        List<ReimbursementDto> reimbursementDtos = reimbursementService.getReimbursementsByUserId(userId);
+//
+//        return ResponseEntity.ok(reimbursementDtos);
+//    }
 }
