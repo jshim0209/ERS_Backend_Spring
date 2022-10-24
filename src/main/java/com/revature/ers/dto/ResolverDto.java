@@ -10,5 +10,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class ResolverDto {
 
+    private int userId;
     private String username;
 }

@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @Table (name = "users")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -33,7 +33,7 @@ public class User {
     @Column
     private String email;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private UserRole role;
 
 }

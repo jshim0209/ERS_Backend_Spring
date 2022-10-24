@@ -159,13 +159,15 @@ class ReimbursementServiceTest {
     @Test
     void test_get_reimbursementById_positive() {
 
-        when(reimbRepo.findById(1)).thenReturn(Optional.of(fakeReimb1));
+        Reimbursement expected = fakeReimb1;
 
-        ReimbursementDto expected = new ReimbursementDto(1, 1000.00, "05/07/2022",
-                "05/08/2022", "description", "image.jpg", new AuthorDto("username1"),
-                new ResolverDto("username2"), fakeStatus1, fakeType1);
+        when(reimbRepo.findById(1)).thenReturn(expected);
 
-        ReimbursementDto actual = reimbService.getReimbursementById(1);
+//        ReimbursementDto expected = new ReimbursementDto(1, 1000.00, "05/07/2022",
+//                "05/08/2022", "description", "image.jpg", new AuthorDto("username1"),
+//                new ResolverDto("username2"), fakeStatus1, fakeType1);
+
+        Reimbursement actual = reimbService.getReimbursementById(1);
 
         Assertions.assertEquals(expected, actual);
     }

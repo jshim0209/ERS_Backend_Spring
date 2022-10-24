@@ -2,6 +2,9 @@ package com.revature.ers.controller;
 
 import com.revature.ers.dto.AddReimbursementDto;
 import com.revature.ers.dto.ReimbursementDto;
+import com.revature.ers.dto.RestRequestUpdateStatusDto;
+import com.revature.ers.dto.RestResponseUpdateStatusDto;
+import com.revature.ers.exception.ResolvedStatusException;
 import com.revature.ers.model.Status;
 import com.revature.ers.service.JwtService;
 import com.revature.ers.service.ReimbursementService;
@@ -32,7 +35,8 @@ public class ReimbursementController {
     ReimbursementDto rdto = new ReimbursementDto();
 
     @PostMapping("/users/{userId}/reimbursement")
-    public ResponseEntity<ReimbursementDto> addReimbursement(@PathVariable ("userId") int userId, @RequestBody AddReimbursementDto ardto) {
+    public ResponseEntity<ReimbursementDto> addReimbursement(@PathVariable ("userId") int userId,
+                                                             @RequestBody AddReimbursementDto ardto) {
 
         ReimbursementDto newReimbursement = reimbursementService.addReimbursement(userId, ardto);
 
@@ -61,6 +65,14 @@ public class ReimbursementController {
             reimbursementDtos = reimbursementService.getReimbursementsByUserIdAndStatus(userId, status);
         }
         return ResponseEntity.ok(reimbursementDtos);
+    }
+
+    @PatchMapping("/reimbursement/{reimbursementId}/resolve")
+    public ResponseEntity<RestResponseUpdateStatusDto> resolveReimbursement(@PathVariable ("reimbursementId") Integer reimbursementId,
+                                                                            @RequestBody RestRequestUpdateStatusDto dto) throws ResolvedStatusException {
+        RestResponseUpdateStatusDto statusUpdatedReimb = reimbursementService.resolveReimbursement(reimbursementId, dto);
+
+        return ResponseEntity.ok(statusUpdatedReimb);
     }
 
 }

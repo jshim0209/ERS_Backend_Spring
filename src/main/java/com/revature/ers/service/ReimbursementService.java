@@ -1,7 +1,11 @@
 package com.revature.ers.service;
 
+import com.revature.ers.dao.UserRepository;
 import com.revature.ers.dto.AddReimbursementDto;
 import com.revature.ers.dto.ReimbursementDto;
+import com.revature.ers.dto.RestRequestUpdateStatusDto;
+import com.revature.ers.dto.RestResponseUpdateStatusDto;
+import com.revature.ers.exception.ResolvedStatusException;
 import com.revature.ers.model.Reimbursement;
 import com.revature.ers.model.Status;
 import com.revature.ers.model.User;
@@ -26,6 +30,9 @@ public class ReimbursementService {
 
     @Autowired
     StatusRepository statusRepo;
+
+    @Autowired
+    UserRepository userRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -59,15 +66,9 @@ public class ReimbursementService {
         return reimbursementDtos;
     }
 
-    public ReimbursementDto getReimbursementById(int id) {
+    public Reimbursement getReimbursementById(int id) {
 
-        Optional<Reimbursement> optional = reimbRepo.findById(id);
-
-        if(optional.isPresent()) {
-            return modelMapper.map(optional.get(), ReimbursementDto.class);
-
-        }
-        return null;
+        return reimbRepo.getById(id);
     }
 
     public List<ReimbursementDto> getReimbursementsByUserId(int authorId) {
@@ -100,5 +101,27 @@ public class ReimbursementService {
         return reimbursementDtos;
     }
 
+    public RestResponseUpdateStatusDto resolveReimbursement(int id, RestRequestUpdateStatusDto dto) throws ResolvedStatusException {
 
+        Reimbursement reimbursement = reimbRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reimbursement does not exist with id "
+                + id));
+
+        User resolver = userRepo.findById(dto.getResolverId())
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist with id "
+                + dto.getResolverId()));
+
+        reimbursement.setStatus(dto.getStatus());
+        reimbursement.setResolver(resolver);
+        reimbursement.setTimeResolved(dto.getTimeResolved());
+
+        Reimbursement save = reimbRepo.save(reimbursement);
+
+        return RestResponseUpdateStatusDto.builder()
+                .id(save.getId())
+                .udpatedStatus(save.getStatus())
+                .updatedResolver(save.getResolver())
+                .timeResolved(save.getTimeResolved())
+                .build();
+    }
 }

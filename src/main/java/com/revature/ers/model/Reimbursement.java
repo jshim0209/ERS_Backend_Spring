@@ -1,7 +1,6 @@
 package com.revature.ers.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -33,16 +32,17 @@ public class Reimbursement {
     @Column
     private String receipt;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private User author;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private User resolver;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private Status status;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private Type type;
+
 }
 
